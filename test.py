@@ -19,7 +19,7 @@ class Test:
 
         """ A system-wide test of hardware, software, serial interaction etc (doesn't use the global port name) """
         
-	def __init__(self, port, baud, errors=()):
+	def __init__(self, port, baud, errors=[]):
 		self.port = port
 		self.baud = baud
 		self.errors = errors
@@ -30,7 +30,7 @@ class Test:
 			sys.stdout.flush()
 			print '\r(+) SUCCESS'
 		except Exception as e:
-			errors.append((e))
+			self.errors.append((e))
 			print '(-) ERROR OCCURED ON CONNECTION\n'
 			print '(-) EXCEPTIONS APPENDED TO LOG\n'
 
@@ -41,24 +41,24 @@ class Test:
 			self.connection.write('4')
 			time.sleep(1) #lag time 
 			time.sleep(4)
-			print "(+) Powering Motors Backwards "
+			print "(~) Powering Motors Backwards "
 			self.connection.write('c')
 			self.connection.write('4')
 			time.sleep(1) #lag time 
 			time.sleep(4)
-			print "(+) Powering Motors Left "
+			print "(~) Powering Motors Left "
 			self.connection.write('d')
 			self.connection.write('4')
 			time.sleep(1) #lag time 
 			time.sleep(4)
-			print "(+) Powering Motors Right"
+			print "(~) Powering Motors Right"
 			self.connection.write('e')
 			self.connection.write('4')
 			time.sleep(1) #lag time 
 			time.sleep(4)
 			print "(+) SUCCESSFUL"
 		except Exception as e:
-			errors.append((e))
+			self.errors.append((e))
 			print "(-) MOTOR CONNECTION FAILED"
 
 	def lcd(self):
@@ -66,13 +66,13 @@ class Test:
 			print "(~) INITIALISING LCD"
 			self.connection.write("a")
 			self.connection.write("test post")
-			time.sleep(1)
+			time.sleep(4)
 			print "(+) LCD WORKING"
 		except Exception as e:
-			errors.append((e))
-			print "(-) MOTOR CONNECTION FAILED"
+			self.errors.append((e))
+			print "(-) LCD CONNECTION FAILED"
 
-	def sensor():
+	def sensor(self):
 		try:
 			import RPi.GPIO as GPIO
 			GPIO.setmode(GPIO.BCM)
@@ -90,18 +90,19 @@ class Test:
 			pulse_duration = pulse_end - pulse_start
 			distance = pulse_duration * (SPEED_OF_SOUND/2)
 			distance = round(distance, 2)
-			print str(distance) + 'cm ' + 'away'
+			print distance
 		except Exception as e:
-			errors.append((e))
+			self.errors.append(e)
 
-	def full_check():
+	def full_check(self):
 		self.motor()
 		self.lcd()
-		self.sensor()
+		for _ in range(5):
+			self.sensor()
 
-	def log():
-		with open(errors.txt) as err:
-			err.write(str(errors))
+	def log(self):
+		with open('errors.txt','w') as err:
+			err.write(str(self.errors))
 
 def check_motors():
 	port = Serial('/dev/tty.usbmodem411', 115200)

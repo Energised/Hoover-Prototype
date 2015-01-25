@@ -73,7 +73,7 @@ class Clean:
 				done = False
 
 	def simple_clean(self):
-		
+		pass
 
 	def roomba_style(self):
 		pass

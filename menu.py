@@ -11,8 +11,8 @@
 #   - clean.py - Main Program
 #   - test.py - Test both Arduino and RPi
 #   - check.py - Checks for the .dat file
-#	- globals.py - Contains the port information to be called straight away (not called in test.py)
-#	- quickytable.py - Bespoke solution to make life easy
+#   - globals.py - Contains the port information to be called straight away (not called in test.py)
+#   - quickytable.py - Bespoke solution to make life easy
 #
 
 import time
@@ -60,7 +60,7 @@ class Menu():
 
 	def test_func(self):
 		self.__clear__()
-		check = Test('/dev/tty.usbmodem411',115200) # initialises a test protocol
+		check = Test('/dev/ttyACM0',115200) # initialises a test protocol
 		done = False
 		while not done:
 			QuickyTable("Motors", "LCD", "Both")
@@ -75,6 +75,7 @@ class Menu():
 			else:
 				done = False
 				print "(-) Invalid input "
+		check.log()
 		new = Menu()
 
 

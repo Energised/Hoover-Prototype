@@ -10,7 +10,7 @@ from sys import exit
 from serial import Serial
 from time import sleep
 
-PORT_NAME = '/dev/tty.usbmodem411'
+PORT_NAME = '/dev/ttyACM0'
 
 try:
 	print "(~) Accessing Port at " + PORT_NAME
