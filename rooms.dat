@@ -1,8 +1,8 @@
 (dp0
-S'Longue_y'
+S'bed_y'
 p1
-I300
-sS'Longue_x'
+I10
+sS'bed_x'
 p2
-I500
+I40
 s.

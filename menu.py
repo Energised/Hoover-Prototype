@@ -17,7 +17,7 @@
 
 import time
 
-from serial import Serial # externalities
+from serial import Serial # dependancies 
 
 from quickytable import QuickyTable # homemade modules
 from schedule import Schedule
@@ -25,7 +25,7 @@ from test import Test
 from clean import Clean
 
 from hardware import * # also homemade
-from globals import *
+from globals import * # required in any serial call
 
 class Menu():
 
@@ -36,13 +36,22 @@ class Menu():
 		self.decide()
 
 	def decide(self):
-		self.choice = int(input("(~) "))
+		try:
+			self.choice = int(input("(~) "))
+		except NameError:
+			self.__clear__()
+			print "(-) Invalid input, please try again "
+			new = Menu()
 		if self.choice == 0:
 			self.cleaning()
 		elif self.choice == 1:
 			self.add_schedule()
 		elif self.choice == 2:
 			self.test_func()
+		else:
+			self.__clear__()
+			print "(-) Invalid input, please try again "
+			new = Menu()
 
 	def cleaning(self):
 		self.__clear__()
@@ -60,10 +69,10 @@ class Menu():
 
 	def test_func(self):
 		self.__clear__()
-		check = Test('/dev/ttyACM0',115200) # initialises a test protocol
+		check = Test('/dev/tty.usbmodem411',115200) # initialises a test object and will access the port on a seperate line 
 		done = False
 		while not done:
-			QuickyTable("Motors", "LCD", "Both")
+			QuickyTable("Motors", "LCD", "Sensor", "Servo", "All")
 			test_check = int(input("(~) What do you want to test?: "))
 			done = True
 			if test_check == 0:
@@ -71,10 +80,14 @@ class Menu():
 			elif test_check == 1:
 				check.lcd()
 			elif test_check == 2:
+				check.sensor()
+			elif test_check == 3:
+				check.servo()
+			elif test_check == 4:
 				check.full_check()
 			else:
 				done = False
-				print "(-) Invalid input "
+				print "(-) Invalid input, please try again "
 		check.log()
 		new = Menu()
 
@@ -84,9 +97,9 @@ class Menu():
 			from subprocess import call
 			call(['clear'])
 		except ImportError:
-			print "The module subprocess isn't included in your library."
+			print "(-) The module subprocess isn't included in your library."
 		except OSError:
-			print "Your bash doesn't have the function clear available."
+			print "(-) Your computer doesn't have the function 'clear' available, please refer to the manual for more information"
 
 
 if __name__ == '__main__':

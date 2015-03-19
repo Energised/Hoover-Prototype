@@ -99,10 +99,17 @@
 #		>> left(t)
 #		>> right(t)
 #
+#	TIMING:
+#
+#		For movement at a 90 degree angle, I have found that a time of roughly 2 seconds seems to give a good approximate value
+#		Other angles can be calculated as time in the domain (t >= 1)
+#		
+#		Moving forwards for t=1 seconds gives a distance of 17cm
+#
 
 import time
 from serial import Serial
-import RPi.GPIO as GPIO
+#import RPi.GPIO as GPIO
 
 from globals import *
 #port = Serial('/dev/tty.usbmodem411',115200)
@@ -123,19 +130,19 @@ def backwards(t):
 	time.sleep(t + 1)
 
 def left(t):
-	port.write('d')
-	port.write(str(t))
-	time.sleep(t + 1)
-
-def right(t):
 	port.write('e')
 	port.write(str(t))
 	time.sleep(t + 1)
 
-def lcd(x):
+def right(t):
+	port.write('d')
+	port.write(str(t))
+	time.sleep(t + 1)
+
+def lcd(t):
 	port.write('a')
 	time.sleep(1)
-	port.write(str(x))
+	port.write(str(t))
 	time.sleep(2)
 
 def sensor():
@@ -159,14 +166,11 @@ def sensor():
 		distance = 0
 	return distance
 
-def example():
-	forwards(3)
-	time.sleep(1)
-	backwards(3)
-	time.sleep(1)
-	left(3)
-	time.sleep(1)
-	right(3)
-	time.sleep(1)
-	lcd("nananana")
-	time.sleep(1)
+def servo():
+	port.write('f')
+	time.sleep(3)
+
+def test():
+	left(4)
+
+#test()

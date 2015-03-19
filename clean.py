@@ -23,15 +23,16 @@
 
 from serial import Serial
 from hardware import *
-from prettytable import PrettyTable
 from quickytable import QuickyTable
+from simpleclean import *
+from roomba_esque import *
 
 import pickle
 
-rooms = {}
-
 CURRENT_X = 0
 CURRENT_Y = 0
+
+rooms = {}
 
 class Clean:
 
@@ -41,23 +42,27 @@ class Clean:
 		print "(~) Commencing clean "
 		print "(~) Choosing Room "
 		print "(~) List of current rooms "
-		for num, place in enumerate(rooms):
-			print num + ' -- ' + place + ' = ' + rooms[place]
+		with open('rooms.dat','rb') as data:
+			self.info = pickle.load(data)
+		for section in self.info.items():
+			for part in section:
+				print part
 		choice = raw_input("(~) Enter room name (if name doesn't exist one will be made) ")
 		choice_x, choice_y = choice + '_x', choice + '_y'
-		if choice_x in rooms:
-			CURRENT_X = rooms[choice_x]
-			CURRENT_Y = rooms[choice_y]
+		if choice_x in self.info:
+			CURRENT_X = self.info[choice_x]
+			CURRENT_Y = self.info[choice_y]
 		else:
 			val_x = int(input("(~) Input " + choice + "'s length (longest side): "))
 			val_y = int(input("(~) Input " + choice + "'s width (shortest side): "))
-			rooms[choice_x], rooms[choice_y] = val_x, val_y
+			self.info[choice_x], self.info[choice_y] = val_x, val_y
 			CURRENT_X, CURRENT_Y = val_x, val_y
 		self.__clear__()
-		print "(+) Using the Room Size: " + str(CURRENT_X) + ',' + str(CURRENT_Y)
+		rooms = self.info
+		print "(+) Using the Room Size (in cm): " + str(CURRENT_X) + ',' + str(CURRENT_Y)
 		self.__save__()
 		print "(~) User algorithm decision "
-		QuickyTable('Simple Clean', 'Roomba Style', 'Spanning Tree') # 3 simple options for now
+		QuickyTable('Simple Clean', 'Roomba-esque', 'Spanning Tree') # 3 simple options for now
 		done = False
 		while not done:
 			done = True
@@ -73,16 +78,17 @@ class Clean:
 				done = False
 
 	def simple_clean(self):
-		pass
+		passes = 0
+		CURRENT_X, CURRENT_Y, passes = clean_a(CURRENT_Y,'l', CURRENT_X, CURRENT_Y)
 
-	def roomba_style(self):
-		pass
+	def roomba_esque(self):
+		CURRENT_X, CURRENT_Y = clean_b()
 
 	def spanning_tree(self):
 		pass
 
 	def __save__(self):
-		with open('rooms.dat','w') as size:
+		with open('rooms.dat','a') as size:
 			pickle.dump(rooms, size)
 			print "(+) Data Saved "
 

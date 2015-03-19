@@ -74,7 +74,7 @@ class Test:
 
 	def sensor(self):
 		try:
-			import RPi.GPIO as GPIO
+			#import RPi.GPIO as GPIO
 			GPIO.setmode(GPIO.BCM)
 			GPIO.setup(TRIG, GPIO.OUT)
 			GPIO.setup(ECHO, GPIO.IN)
@@ -93,29 +93,24 @@ class Test:
 			print distance
 		except Exception as e:
 			self.errors.append(e)
+			print "(-) SENSOR TEST FAILED"
+
+	def servo(self):
+		try:
+			print "(~) MOVING BRUSH SERVO"
+			self.connection.write('f')
+			time.sleep(3)
+			print "(+) BRUSH SERVO WORKING"
+		except Exception as e:
+			self.errors.append(e)
+			print "(-) BRUSH SERVO TEST FAILED"
 
 	def full_check(self):
 		self.motor()
 		self.lcd()
-		for _ in range(5):
-			self.sensor()
+		#for _ in range(5):
+		#	self.sensor()
 
 	def log(self):
 		with open('errors.txt','w') as err:
 			err.write(str(self.errors))
-
-def check_motors():
-	port = Serial('/dev/tty.usbmodem411', 115200)
-	time.sleep(1) # has to be 1 or more
-	port.write('b')
-	port.write('3')
-	time.sleep(4) # time to move + 1
-	port.write('c')
-	port.write('3')
-	time.sleep(4)
-	port.write('d')
-	port.write('3')
-	time.sleep(4)
-	port.write('e')
-	port.write('3')
-	time.sleep(4)
