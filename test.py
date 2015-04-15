@@ -74,7 +74,10 @@ class Test:
 
 	def sensor(self):
 		try:
-			#import RPi.GPIO as GPIO
+			import RPi.GPIO as GPIO
+			TRIG = 23
+			ECHO = 24
+			SPEED_OF_SOUND = 34300
 			GPIO.setmode(GPIO.BCM)
 			GPIO.setup(TRIG, GPIO.OUT)
 			GPIO.setup(ECHO, GPIO.IN)
@@ -98,8 +101,8 @@ class Test:
 	def servo(self):
 		try:
 			print "(~) MOVING BRUSH SERVO"
-			self.connection.write('f')
-			time.sleep(3)
+			self.connection.write("f")
+			time.sleep(4)
 			print "(+) BRUSH SERVO WORKING"
 		except Exception as e:
 			self.errors.append(e)
@@ -108,8 +111,8 @@ class Test:
 	def full_check(self):
 		self.motor()
 		self.lcd()
-		#for _ in range(5):
-		#	self.sensor()
+		self.sensor()
+		self.servo()
 
 	def log(self):
 		with open('errors.txt','w') as err:

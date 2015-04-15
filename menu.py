@@ -42,6 +42,10 @@ class Menu():
 			self.__clear__()
 			print "(-) Invalid input, please try again "
 			new = Menu()
+		except SyntaxError:
+			self.__clear__()
+			print "(-) No input given, please try again "
+			new = Menu()
 		if self.choice == 0:
 			self.cleaning()
 		elif self.choice == 1:
@@ -61,19 +65,27 @@ class Menu():
 	def add_schedule(self):
 		self.__clear__()
 		set_clean = Schedule() # calls an instance of schedule to be made and checked
-		if self_clean.check():
+		if set_clean.check():
+			print "(+) Time to Clean "
 			new_clean = Clean()
+		else:
+			print "(-) It is not yet time to clean "
 		set_clean.save()
 		set_clean.show()
 		new = Menu()
 
 	def test_func(self):
 		self.__clear__()
-		check = Test('/dev/tty.usbmodem411',115200) # initialises a test object and will access the port on a seperate line 
+		check = Test('/dev/ttyACM0',115200) # initialises a test object and will access the port on a seperate line 
 		done = False
 		while not done:
 			QuickyTable("Motors", "LCD", "Sensor", "Servo", "All")
-			test_check = int(input("(~) What do you want to test?: "))
+			try:
+				test_check = int(input("(~) What do you want to test?: "))
+			except NameError:
+				#self.__clear__()
+				print "(-) Invalid input, please try again "
+				new = Menu()
 			done = True
 			if test_check == 0:
 				check.motor()

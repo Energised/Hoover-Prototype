@@ -109,7 +109,7 @@
 
 import time
 from serial import Serial
-#import RPi.GPIO as GPIO
+import RPi.GPIO as GPIO
 
 from globals import *
 #port = Serial('/dev/tty.usbmodem411',115200)
@@ -148,6 +148,7 @@ def lcd(t):
 def sensor():
 	try:
 		GPIO.setmode(GPIO.BCM)
+		GPIO.setwarnings(False)
 		GPIO.setup(TRIG, GPIO.OUT)
 		GPIO.setup(ECHO, GPIO.IN)
 		GPIO.output(TRIG, False)
@@ -170,7 +171,3 @@ def servo():
 	port.write('f')
 	time.sleep(3)
 
-def test():
-	left(4)
-
-#test()

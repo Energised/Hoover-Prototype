@@ -26,13 +26,10 @@ from hardware import *
 from quickytable import QuickyTable
 from simpleclean import *
 from roomba_esque import *
-
 import pickle
 
 CURRENT_X = 0
 CURRENT_Y = 0
-
-rooms = {}
 
 class Clean:
 
@@ -43,53 +40,63 @@ class Clean:
 		print "(~) Choosing Room "
 		print "(~) List of current rooms "
 		with open('rooms.dat','rb') as data:
-			self.info = pickle.load(data)
-		for section in self.info.items():
-			for part in section:
-				print part
+			try:
+				self.info = pickle.load(data)
+				for section in self.info.items():
+					for part in section:
+						print part
+			except:
+				print "(-) No room data available as of yet "
+				self.info = {}
 		choice = raw_input("(~) Enter room name (if name doesn't exist one will be made) ")
 		choice_x, choice_y = choice + '_x', choice + '_y'
 		if choice_x in self.info:
 			CURRENT_X = self.info[choice_x]
 			CURRENT_Y = self.info[choice_y]
+			new_room = []
 		else:
 			val_x = int(input("(~) Input " + choice + "'s length (longest side): "))
 			val_y = int(input("(~) Input " + choice + "'s width (shortest side): "))
 			self.info[choice_x], self.info[choice_y] = val_x, val_y
 			CURRENT_X, CURRENT_Y = val_x, val_y
-		self.__clear__()
-		rooms = self.info
+			new_room = {choice_x:val_x, choice_y:val_y}
+		#self.__clear__()
 		print "(+) Using the Room Size (in cm): " + str(CURRENT_X) + ',' + str(CURRENT_Y)
-		self.__save__()
+		self.__save__(new_room)
 		print "(~) User algorithm decision "
-		QuickyTable('Simple Clean', 'Roomba-esque', 'Spanning Tree') # 3 simple options for now
 		done = False
 		while not done:
+			QuickyTable('Simple Clean', 'Roomba-esque')
 			done = True
-			alg_choice = int(input("(~) Awaiting User Input "))
-			if alg_choice == 0:
-				self.simple_clean()
-			elif alg_choice == 1:
-				self.roomba_style()
-			elif alg_choice == 2:
-				self.spanning_tree()
-			else:
-				print "(-) Invalid User Input "
+			try:
+				alg_choice = int(input("(~) "))
+				if alg_choice == 0:
+					self.simple_clean(CURRENT_X, CURRENT_Y)
+				elif alg_choice == 1:
+					self.roomba_esque(CURRENT_X, CURRENT_Y)
+				else:
+					print "(-) Invalid User Input "
+					done = False
+			except NameError:
 				done = False
+				print "(-) Invalid input, please try again "
+			except SyntaxError:
+				done = False
+				print "(-) No input given, please try again "
 
-	def simple_clean(self):
+	def simple_clean(self, CURRENT_X, CURRENT_Y):
 		passes = 0
 		CURRENT_X, CURRENT_Y, passes = clean_a(CURRENT_Y,'l', CURRENT_X, CURRENT_Y)
 
-	def roomba_esque(self):
+	def roomba_esque(self, CURRENT_X, CURRENT_Y):
 		CURRENT_X, CURRENT_Y = clean_b()
 
 	def spanning_tree(self):
 		pass
 
-	def __save__(self):
+	def __save__(self, new_room):
 		with open('rooms.dat','a') as size:
-			pickle.dump(rooms, size)
+			pickle.dump(new_room, size)
 			print "(+) Data Saved "
 
 	def __clear__(self):

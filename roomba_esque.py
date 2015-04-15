@@ -6,8 +6,7 @@
 # requires the user to begin the clean in the middle of the room
 
 from globals import *
-from serial import serial
-
+from hardware import *
 
 def spiral():
 	found = False
@@ -22,3 +21,7 @@ def spiral():
 				forwards(time)
 				left(time)
 
+def clean_b():
+	print ""
+	print ""
+	print ""

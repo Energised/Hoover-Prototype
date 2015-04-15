@@ -17,7 +17,6 @@
 
 from globals import *
 from hardware import *
-
 from clean import *
 
 def clean_a(verticle, direction, CURRENT_X, CURRENT_Y): # direction must be called as 'l' or 'r'
@@ -27,7 +26,7 @@ def clean_a(verticle, direction, CURRENT_X, CURRENT_Y): # direction must be call
 		distance = sensor()
 		if distance <= 20:
 			found_wall = True # end of a)
-	
+	print "a"
 	found_block = False
 	if direction == 'l': 
 		left(2)
@@ -35,6 +34,7 @@ def clean_a(verticle, direction, CURRENT_X, CURRENT_Y): # direction must be call
 		right(2)
 	while not found_block:
 		distance = sensor()
+		print distance
 		if distance >= 30:
 			found_block = True
 		else:
@@ -47,11 +47,13 @@ def clean_a(verticle, direction, CURRENT_X, CURRENT_Y): # direction must be call
 				right(2)
 			else:
 				left(2) # end of b)
-	
+				
+	print "b"
 	for _ in range(4):
 		found_object = False
 		while not found_object:
 			forwards(2) # end of c)
+			print "c"
 			distance = sensor()
 			if distance <= 20:
 				found_object = True
@@ -60,10 +62,12 @@ def clean_a(verticle, direction, CURRENT_X, CURRENT_Y): # direction must be call
 			if stuck_check == distance:
 				backwards(1)
 				found_object = True # end of d)
+				print "d"
 		if direction == 'l':
 			left(2)
 		else:
 			right(2) # end of e)
+	print "e"
 	move = (CURRENT_X / 2)/17
 	move = round(move, 2)
 	forwards(move)
